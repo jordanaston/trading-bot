@@ -1,6 +1,6 @@
 import express from "express";
-import createUser from "../controllers/users/createUser";
-import welcomeMessage from "../controllers/welcome/welcomeMessage";
+import createUser from "../handlers/users/createUser";
+import welcomeMessage from "../handlers/welcome/welcomeMessage";
 
 const router = express.Router();
 

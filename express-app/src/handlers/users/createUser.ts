@@ -9,9 +9,12 @@ export const createUser = async (req: Request, res: Response) => {
   try {
     await newUser.save();
     res.status(201).json(newUser);
-  } catch (error) {
-    res.status(409).json({ message: (error as Error).message });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(409).json({ message: error.message });
+    } else {
+      res.status(409).json({ message: "An unknown error occurred" });
+    }
   }
 };
-
 export default createUser;

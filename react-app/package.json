@@ -10,8 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.51.23",
+    "@types/axios": "^0.14.0",
+    "axios": "^1.7.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.52.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
