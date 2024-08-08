@@ -1,13 +1,11 @@
-import express, { Request, Response } from 'express';
-import createUser from '../controllers/userController';
-
+import express from "express";
+import createUser from "../controllers/users/createUser";
+import welcomeMessage from "../controllers/welcome/welcomeMessage";
 
 const router = express.Router();
 
-router.get('/', (req: Request, res: Response) => {
-  res.send('Welcome to the Trading Bot');
-});
+router.get("/", welcomeMessage);
 
-router.post('/users', createUser);
+router.post("/users", createUser);
 
 export default router;
