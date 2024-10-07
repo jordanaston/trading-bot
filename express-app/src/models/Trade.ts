@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 const tradeSchema: Schema = new Schema({
+  id: { type: Schema.Types.ObjectId, required: true },
   symbol: { type: String, required: true },
   side: { type: String, required: true },
   type: { type: String, required: true },
