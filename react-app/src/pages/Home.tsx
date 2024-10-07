@@ -34,15 +34,17 @@ function Home({ setIsLoggedIn }: HomeProps) {
       {tradesError && (
         <p className="text-red-500 text-sm text-center">Error loading trades</p>
       )}
-      {trades && (
+      {Array.isArray(trades) && (
         <ul>
-          {trades.map((trade: TradeType) => (
-            <li key={trade.id}>
-              <div className="mx-[5%]">
-                <TradeCard trade={trade} botStatusActive={botStatusActive} />
-              </div>
-            </li>
-          ))}
+          {trades.map((trade: TradeType) => {
+            return (
+              <li key={trade.id}>
+                <div className="mx-[5%]">
+                  <TradeCard trade={trade} botStatusActive={botStatusActive} />
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
