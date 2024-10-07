@@ -1,12 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { BASE_URL } from "../constants/baseUrl";
 
 const createUser = async (email: string, password: string) => {
   try {
-    const { data } = await axios.post(
-      "http://localhost:5001/users",
-      { email, password }
-    );
+    const { data } = await axios.post(`${BASE_URL}/users`, { email, password });
     return data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {

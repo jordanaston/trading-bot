@@ -11,7 +11,6 @@ function SignUp() {
         email: data.email as string,
         password: data.password as string,
       });
-      console.log("User created successfully");
     } catch (error) {
       console.error("Error creating user:", error);
     }

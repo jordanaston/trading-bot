@@ -1,15 +1,18 @@
+import { useState } from "react";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
 import "./App.css";
-import SignUp from "./components/signUp";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
     <>
-      <div className="flex justify-center mt-40">
-        <p>Trading Bot</p>
-      </div>
-      <div className="flex justify-center mt-32">
-        <SignUp />
-      </div>
+      {isLoggedIn ? (
+        <Home setIsLoggedIn={setIsLoggedIn} />
+      ) : (
+        <Login setIsLoggedIn={setIsLoggedIn} />
+      )}
     </>
   );
 }

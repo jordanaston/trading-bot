@@ -13,9 +13,13 @@
     "@tanstack/react-query": "^5.51.23",
     "@types/axios": "^0.14.0",
     "axios": "^1.7.3",
+    "notistack": "^3.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-hook-form": "^7.52.2"
+    "react-hook-form": "^7.52.2",
+    "react-icons": "^5.2.1",
+    "react-spinners": "^0.14.1",
+    "react-toastify": "^10.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
