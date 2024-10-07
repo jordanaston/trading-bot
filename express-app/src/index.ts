@@ -10,13 +10,19 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+app.use(
+  cors({
+    origin: "https://ares-trading-bot.netlify.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
-app.use(cors());
+
 app.use("/", routes);
 // app.get("/welcome", welcomeMessage);
 
 const CONNECTION_URL = process.env.CONNECTION_URL as string;
-
 
 mongoose
   .connect(CONNECTION_URL)

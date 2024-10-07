@@ -1,5 +1,4 @@
 export interface TradeType {
-  id: string;
   symbol: string;
   side: string;
   type: string;

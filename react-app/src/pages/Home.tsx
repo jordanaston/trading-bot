@@ -38,7 +38,7 @@ function Home({ setIsLoggedIn }: HomeProps) {
         <ul>
           {trades.map((trade: TradeType) => {
             return (
-              <li key={trade.id}>
+              <li key={trade.timestamp.toString()}>
                 <div className="mx-[5%]">
                   <TradeCard trade={trade} botStatusActive={botStatusActive} />
                 </div>
