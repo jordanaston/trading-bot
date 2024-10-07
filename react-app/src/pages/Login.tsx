@@ -17,8 +17,12 @@ function Login({ setIsLoggedIn }: LoginProps) {
     setError(null);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      await loginUser(username, password);
-      setIsLoggedIn(true);
+      const loginResponse = await loginUser(username, password);
+
+      if (loginResponse.message === "Login successful") {
+        console.log("Login successful");
+        setIsLoggedIn(true);
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

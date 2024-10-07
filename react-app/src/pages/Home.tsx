@@ -36,7 +36,7 @@ function Home({ setIsLoggedIn }: HomeProps) {
       )}
       {Array.isArray(trades) && (
         <ul>
-          {trades.map((trade: any) => {
+          {trades.map((trade: TradeType) => {
             return (
               <li key={trade.id}>
                 <div className="mx-[5%]">
