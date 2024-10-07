@@ -19,7 +19,8 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "tsc:init": "tsc --init",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "build": "tsc"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

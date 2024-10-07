@@ -1,0 +1,26 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const createUser_1 = __importDefault(require("../handlers/users/createUser"));
+const welcomeMessage_1 = __importDefault(require("../handlers/welcome/welcomeMessage"));
+const createBuyOrderRoute_1 = __importDefault(require("../handlers/binance/createBuyOrderRoute"));
+const createSellOrderRoute_1 = __importDefault(require("../handlers/binance/createSellOrderRoute"));
+const tradingViewWebhook_1 = __importDefault(require("../handlers/tradingView/tradingViewWebhook"));
+const getAllTrades_1 = require("../handlers/trades/getAllTrades");
+const loginUser_1 = __importDefault(require("../handlers/users/loginUser"));
+const controlBot_1 = __importDefault(require("../handlers/bot/controlBot"));
+const getBotStatus_1 = __importDefault(require("../handlers/bot/getBotStatus"));
+const router = express_1.default.Router();
+router.get("/", welcomeMessage_1.default);
+router.post("/users/createUser", createUser_1.default);
+router.post("/users/loginUser", loginUser_1.default);
+router.post("/binance/buy", createBuyOrderRoute_1.default);
+router.post("/binance/sell", createSellOrderRoute_1.default);
+router.post("/tradingView/webhook", tradingViewWebhook_1.default);
+router.get("/trades/getAllTrades", getAllTrades_1.getAllTrades);
+router.post("/bot/controlBot", controlBot_1.default);
+router.get("/bot/getBotStatus", getBotStatus_1.default);
+exports.default = router;
