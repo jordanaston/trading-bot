@@ -16,8 +16,8 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     if (password === user.password) {
-        
-      return res.status(200).json({ message: "Login successful" });
+
+      return res.status(200).json({ message: "Login successful", user: user });
     }
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
