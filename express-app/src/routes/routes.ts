@@ -1,6 +1,6 @@
 import express from "express";
 import createUser from "../handlers/users/createUser";
-import welcomeMessage from "../handlers/welcome/welcomeMessage";
+// import welcomeMessage from "../handlers/welcome/welcomeMessage";
 import createBuyOrder from "../handlers/binance/createBuyOrderRoute";
 import createSellOrder from "../handlers/binance/createSellOrderRoute";
 import tradingViewWebhook from "../handlers/tradingView/tradingViewWebhook";
@@ -11,7 +11,7 @@ import getBotStatus from "../handlers/bot/getBotStatus";
 
 const router = express.Router();
 
-router.get("/", welcomeMessage);
+// router.get("/", welcomeMessage);
 
 router.post("/users/createUser", createUser);
 
