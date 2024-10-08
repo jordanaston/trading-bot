@@ -15,7 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.enterBuy = void 0;
 const __1 = require("..");
 const Trade_1 = __importDefault(require("../../models/Trade"));
-const enterBuy = (symbol, buyCount) => __awaiter(void 0, void 0, void 0, function* () {
+const binanceClient_1 = __importDefault(require("../../client/binanceClient"));
+const enterBuy = (symbol, buyCount, testOrder) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const usdtCapital = yield __1.binance.getUSDTValue();
         let purchaseAmount = 0;
@@ -37,15 +38,23 @@ const enterBuy = (symbol, buyCount) => __awaiter(void 0, void 0, void 0, functio
                 break;
         }
         const symbolPrice = yield __1.binance.getSymbolPrice(symbol);
-        const quantity = usdtCapital / Number(symbolPrice);
+        const quantity = purchaseAmount / Number(symbolPrice);
+        const exchangeInfo = yield binanceClient_1.default.exchangeInfo();
+        const symbolInfo = exchangeInfo.symbols.find((s) => s.symbol === symbol);
+        const precision = (symbolInfo === null || symbolInfo === void 0 ? void 0 : symbolInfo.baseAssetPrecision) || 0;
+        const lotSizeFilter = symbolInfo === null || symbolInfo === void 0 ? void 0 : symbolInfo.filters.find((f) => f.filterType === "LOT_SIZE");
+        const stepSize = parseFloat((lotSizeFilter === null || lotSizeFilter === void 0 ? void 0 : lotSizeFilter.stepSize) || "1");
+        const adjustedQuantity = Math.floor(quantity / stepSize) * stepSize;
+        const preciseQuantity = parseFloat(adjustedQuantity.toFixed(precision));
+        const safetyMargin = 0.98;
+        const finalQuantity = parseFloat((preciseQuantity * safetyMargin).toFixed(precision));
+        const finalAdjustedQuantity = Math.floor(finalQuantity / stepSize) * stepSize;
         const buyPayload = {
             symbol,
             side: "BUY" /* OrderSide.BUY */,
             type: "MARKET",
-            quantity,
+            quantity: finalAdjustedQuantity,
         };
-        const buyOrder = yield __1.binance.createBuyOrder(buyPayload);
-        // maybe should get data from the response
         const tradeData = {
             symbol,
             side: "BUY" /* OrderSide.BUY */,
@@ -53,9 +62,22 @@ const enterBuy = (symbol, buyCount) => __awaiter(void 0, void 0, void 0, functio
             usdtCapital,
             purchaseAmount,
             symbolPrice,
-            quantity,
-            timestamp: new Date().toISOString(),
+            quantity: finalAdjustedQuantity,
+            timestamp: new Date(),
         };
+        if (testOrder === true) {
+            tradeData.testOrder = true;
+        }
+        let buyOrder;
+        try {
+            if (testOrder !== true) {
+                buyOrder = yield __1.binance.createBuyOrder(buyPayload);
+            }
+        }
+        catch (orderError) {
+            console.error("Error executing buy order:", orderError);
+            tradeData.error = orderError.message;
+        }
         const trade = new Trade_1.default(tradeData);
         yield trade.save();
         return buyOrder;

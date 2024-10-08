@@ -7,7 +7,7 @@ import routes from "./routes/routes";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 3001;
 
 app.use(
   cors({
@@ -19,6 +19,10 @@ app.use(
 app.use(express.json());
 
 app.use("/", routes);
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the Ares.");
+});
 
 const CONNECTION_URL = process.env.CONNECTION_URL as string;
 

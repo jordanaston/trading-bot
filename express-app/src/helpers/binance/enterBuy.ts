@@ -38,7 +38,7 @@ export const enterBuy = async (
     const precision = symbolInfo?.baseAssetPrecision || 0;
     const lotSizeFilter = symbolInfo?.filters.find(
       (f) => f.filterType === "LOT_SIZE"
-    );
+    ) as { stepSize: string } | undefined;
     const stepSize = parseFloat(lotSizeFilter?.stepSize || "1");
     const adjustedQuantity = Math.floor(quantity / stepSize) * stepSize;
     const preciseQuantity = parseFloat(adjustedQuantity.toFixed(precision));

@@ -25,7 +25,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const tradeSchema = new mongoose_1.Schema({
-    id: { type: mongoose_1.Schema.Types.ObjectId, required: true },
     symbol: { type: String, required: true },
     side: { type: String, required: true },
     type: { type: String, required: true },
@@ -34,6 +33,9 @@ const tradeSchema = new mongoose_1.Schema({
     symbolPrice: { type: Number, required: false },
     quantity: { type: Number, required: true },
     timestamp: { type: Date, required: true },
+    testOrder: { type: Boolean, required: false },
+    usdtReceived: { type: Number, required: false },
+    error: { type: String, required: false },
 });
 const Trade = mongoose_1.default.model("Trade", tradeSchema);
 exports.default = Trade;

@@ -14,20 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createSellOrderRoute = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
-const helpers_1 = require("../../helpers");
+const enterSell_1 = require("../../helpers/binance/enterSell");
 dotenv_1.default.config();
 const createSellOrderRoute = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { symbol, quantity, side, type } = req.body;
-    const payload = {
-        symbol,
-        side,
-        type,
-        quantity,
-    };
+    const { symbol } = req.body;
     try {
-        const sellOrder = yield helpers_1.binance.createSellOrder(payload);
+        const sellOrder = yield (0, enterSell_1.enterSell)(symbol);
         res.status(201).json(sellOrder);
-        console.log("Sell order successful:", sellOrder);
     }
     catch (error) {
         if (error instanceof Error) {

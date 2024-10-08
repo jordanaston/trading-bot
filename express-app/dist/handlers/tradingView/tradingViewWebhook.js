@@ -21,7 +21,7 @@ var OrderSide;
 let buyCount = 0;
 const tradingViewWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { symbol, side } = req.body;
+        const { symbol, side, testOrder } = req.body;
         const botStatusActive = yield (0, betBotStatus_1.getBotStatus)();
         if (!symbol || !side) {
             return res.status(400).json({ message: "Invalid request data." });
@@ -35,13 +35,13 @@ const tradingViewWebhook = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 console.log(maxBuysMessage);
                 return res.status(200).json({ message: maxBuysMessage });
             }
-            const buySuccess = yield (0, enterBuy_1.enterBuy)(symbol, buyCount);
-            if (buySuccess)
+            const buySuccess = yield (0, enterBuy_1.enterBuy)(symbol, buyCount, testOrder);
+            if (buySuccess && testOrder !== true)
                 buyCount++;
         }
         else if (side === OrderSide.SELL) {
-            const sellSuccess = yield (0, enterSell_1.enterSell)(symbol);
-            if (sellSuccess)
+            const sellSuccess = yield (0, enterSell_1.enterSell)(symbol, testOrder);
+            if (sellSuccess && testOrder !== true)
                 buyCount = 0;
         }
         res.status(200).json({ message: "Webhook triggered successfully" });
