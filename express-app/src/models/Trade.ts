@@ -9,6 +9,9 @@ const tradeSchema: Schema = new Schema({
   symbolPrice: { type: Number, required: false },
   quantity: { type: Number, required: true },
   timestamp: { type: Date, required: true },
+  testOrder: { type: Boolean, required: false },
+  usdtReceived: { type: Number, required: false },
+  error: { type: String, required: false },
 });
 
 const Trade = mongoose.model("Trade", tradeSchema);

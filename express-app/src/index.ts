@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import routes from "./routes/routes";
-// import welcomeMessage from "./handlers/welcome/welcomeMessage";
 
 dotenv.config();
 
@@ -20,7 +19,6 @@ app.use(
 app.use(express.json());
 
 app.use("/", routes);
-// app.get("/welcome", welcomeMessage);
 
 const CONNECTION_URL = process.env.CONNECTION_URL as string;
 

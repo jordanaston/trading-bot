@@ -12,7 +12,7 @@ let buyCount = 0;
 
 export const tradingViewWebhook = async (req: Request, res: Response) => {
   try {
-    const { symbol, side } = req.body;
+    const { symbol, side, testOrder } = req.body;
 
     const botStatusActive = await getBotStatus();
 
@@ -32,13 +32,13 @@ export const tradingViewWebhook = async (req: Request, res: Response) => {
         return res.status(200).json({ message: maxBuysMessage });
       }
 
-      const buySuccess = await enterBuy(symbol, buyCount);
+      const buySuccess = await enterBuy(symbol, buyCount, testOrder);
 
-      if (buySuccess) buyCount++;
+      if (buySuccess && testOrder !== true) buyCount++;
     } else if (side === OrderSide.SELL) {
-      const sellSuccess = await enterSell(symbol);
+      const sellSuccess = await enterSell(symbol, testOrder);
 
-      if (sellSuccess) buyCount = 0;
+      if (sellSuccess && testOrder !== true) buyCount = 0;
     }
 
     res.status(200).json({ message: "Webhook triggered successfully" });

@@ -5,8 +5,7 @@ export const createBuyOrder = async (payload: any) => {
   try {
     const botStatusActive = await getBotStatus();
     if (botStatusActive === true) {
-      const buyOrder = "test";
-      // const buyOrder = await binanceClient.order(payload);
+      const buyOrder = await binanceClient.order(payload);
       return buyOrder;
     }
   } catch (error: unknown) {

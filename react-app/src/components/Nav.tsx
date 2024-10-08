@@ -1,5 +1,7 @@
 import { useState } from "react";
 import controlBot from "../hooks/useControlBot";
+import useCreateSellOrder from "../hooks/useCreateSellOrder";
+import { DotLoader } from "react-spinners";
 
 enum ControlBot {
   ACTIVE = "active",
@@ -21,6 +23,9 @@ const Nav = ({ setIsLoggedIn, refetchBotStatus }: NavProps) => {
     const response = await controlBot(control);
     console.log(response.message);
   };
+
+  const { mutate: createSellOrder, isLoading } = useCreateSellOrder();
+
   return (
     <div className="flex justify-end items-center p-4">
       <div className="flex space-x-4">
@@ -86,6 +91,22 @@ const Nav = ({ setIsLoggedIn, refetchBotStatus }: NavProps) => {
             className="block w-full text-left text-sm py-2 px-4 mb-2 text-white focus:outline-none hover:text-gray-400"
           >
             Deactivate Bot
+          </button>
+          <button
+            onClick={async () => {
+              createSellOrder({ symbol: "SHIBUSDT" });
+              setTimeout(() => {
+                setIsDrawerOpen(false);
+                refetchBotStatus();
+              }, 1000);
+            }}
+            className="block w-full text-left text-sm py-2 px-4 mb-2 text-white focus:outline-none hover:text-gray-400"
+          >
+            {isLoading ? (
+              <DotLoader size={28} color="#fff" loading={isLoading} />
+            ) : (
+              "Sell All Tokens"
+            )}
           </button>
           <button
             onClick={() => {

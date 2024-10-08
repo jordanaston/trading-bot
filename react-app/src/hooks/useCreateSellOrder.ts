@@ -2,20 +2,11 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { BASE_URL } from "../constants/baseUrl";
 
-const createSellOrder = async (
-  symbol: string,
-  side: string,
-  type: string,
-  quantity: number
-) => {
+const createSellOrder = async (symbol: string) => {
   try {
     const { data } = await axios.post(`${BASE_URL}/binance/sell`, {
       symbol,
-      side,
-      type,
-      quantity,
     });
-    await new Promise((resolve) => setTimeout(resolve, 1500));
     return data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
@@ -33,12 +24,7 @@ const createSellOrder = async (
 
 export default function useCreateSellOrder() {
   const mutation = useMutation({
-    mutationFn: (order: {
-      symbol: string;
-      quantity: number;
-      side: string;
-      type: string;
-    }) => createSellOrder(order.symbol, order.side, order.type, order.quantity),
+    mutationFn: (order: { symbol: string }) => createSellOrder(order.symbol),
   });
 
   return {

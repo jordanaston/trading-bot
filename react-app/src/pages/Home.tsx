@@ -22,10 +22,20 @@ function Home({ setIsLoggedIn }: HomeProps) {
 
   return (
     <div className="font-mono mb-40">
-      <Nav setIsLoggedIn={setIsLoggedIn} refetchBotStatus={refetchBotStatus} />
-      <h1 className="text-center text-md mt-8 text-white">
-        Ares is {botStatusActive ? "activated" : "deactivated"}
-      </h1>
+      <div className="flex justify-between items-center">
+        <p
+          className={`text-left text-[10px] ml-4 opacity-70 ${
+            botStatusActive ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          ares {botStatusActive ? "activated" : "deactivated"}
+        </p>
+        <Nav
+          setIsLoggedIn={setIsLoggedIn}
+          refetchBotStatus={refetchBotStatus}
+        />
+      </div>
+      <img src="/ares.png" alt="Ares" className="mx-auto mt-4 w-16 h-16" />
       <div className="flex justify-center mt-8 mb-10">
         {botStatusActive && (
           <DotLoader size={30} color="#fff" loading={!tradesIsLoading} />
