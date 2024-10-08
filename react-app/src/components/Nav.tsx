@@ -1,7 +1,7 @@
 import { useState } from "react";
 import controlBot from "../hooks/useControlBot";
-import useCreateSellOrder from "../hooks/useCreateSellOrder";
 import { DotLoader } from "react-spinners";
+import useTradingViewWebhook from "../hooks/useTradingViewWebhook";
 
 enum ControlBot {
   ACTIVE = "active",
@@ -24,7 +24,7 @@ const Nav = ({ setIsLoggedIn, refetchBotStatus }: NavProps) => {
     console.log(response.message);
   };
 
-  const { mutate: createSellOrder, isLoading } = useCreateSellOrder();
+  const { mutate: tradingViewWebhook, isLoading } = useTradingViewWebhook();
 
   return (
     <div className="flex justify-end items-center p-4">
@@ -94,7 +94,7 @@ const Nav = ({ setIsLoggedIn, refetchBotStatus }: NavProps) => {
           </button>
           <button
             onClick={async () => {
-              createSellOrder({ symbol: "SHIBUSDT" });
+              tradingViewWebhook({ symbol: "SHIBUSDT", side: "SELL" });
               setTimeout(() => {
                 setIsDrawerOpen(false);
                 refetchBotStatus();

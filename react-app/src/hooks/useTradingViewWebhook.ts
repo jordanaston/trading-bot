@@ -2,10 +2,11 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { BASE_URL } from "../constants/baseUrl";
 
-const createSellOrder = async (symbol: string) => {
+const tradingViewWebhook = async (symbol: string, side: string) => {
   try {
-    const { data } = await axios.post(`${BASE_URL}/binance/sell`, {
+    const { data } = await axios.post(`${BASE_URL}/tradingView/webhook`, {
       symbol,
+      side,
     });
     return data;
   } catch (error: unknown) {
@@ -22,9 +23,10 @@ const createSellOrder = async (symbol: string) => {
   }
 };
 
-export default function useCreateSellOrder() {
+export default function useTradingViewWebhook() {
   const mutation = useMutation({
-    mutationFn: (order: { symbol: string }) => createSellOrder(order.symbol),
+    mutationFn: (order: { symbol: string; side: string }) =>
+      tradingViewWebhook(order.symbol, order.side),
   });
 
   return {
