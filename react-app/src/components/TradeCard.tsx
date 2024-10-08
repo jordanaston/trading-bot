@@ -12,7 +12,7 @@ const TradeDetail = ({
   label: string;
   value: string | number;
 }) => (
-  <div className="text-xs mr-4">
+  <div className="text-xs mr-4 py-2 md:py-0">
     <span className="font-semibold block">{label}</span>
     {value}
   </div>
@@ -43,7 +43,7 @@ const TradeCard = ({ trade, botStatusActive }: TradeCardProps) => {
           />
         )}
         {trade.symbolPrice && (
-          <TradeDetail label="Symbol Price" value={`$${trade.symbolPrice}`} />
+          <TradeDetail label="Price" value={`$${trade.symbolPrice}`} />
         )}
         <TradeDetail label="Quantity" value={trade.quantity} />
         <TradeDetail

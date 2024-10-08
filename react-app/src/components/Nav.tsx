@@ -47,7 +47,7 @@ const Nav = ({ setIsLoggedIn, refetchBotStatus }: NavProps) => {
 
       {isDrawerOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 bg-black bg-opacity-80 z-40"
           onClick={() => setIsDrawerOpen(false)}
         ></div>
       )}

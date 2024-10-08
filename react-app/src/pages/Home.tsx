@@ -23,7 +23,7 @@ function Home({ setIsLoggedIn }: HomeProps) {
   return (
     <div className="font-mono mb-40">
       <Nav setIsLoggedIn={setIsLoggedIn} refetchBotStatus={refetchBotStatus} />
-      <h1 className="text-center text-md mt-20 text-white">
+      <h1 className="text-center text-md mt-8 text-white">
         Ares is {botStatusActive ? "activated" : "deactivated"}
       </h1>
       <div className="flex justify-center mt-8 mb-10">

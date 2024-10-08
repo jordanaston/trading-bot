@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DotLoader } from "react-spinners";
 import loginUser from "../hooks/useLoginuser";
 
@@ -33,6 +33,14 @@ function Login({ setIsLoggedIn }: LoginProps) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   return (
     <div className="font-mono flex items-center justify-center min-h-screen -mt-10">
       {loading ? (
