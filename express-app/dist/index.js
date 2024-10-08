@@ -10,7 +10,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const routes_1 = __importDefault(require("./routes/routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.use((0, cors_1.default)({
     origin: "https://ares-trading-bot.netlify.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
