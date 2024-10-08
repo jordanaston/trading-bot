@@ -2,11 +2,12 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { BASE_URL } from "../constants/baseUrl";
 
-const tradingViewWebhook = async (symbol: string, side: string) => {
+const tradingViewWebhook = async (symbol: string, side: string, testOrder: boolean) => {
   try {
     const { data } = await axios.post(`${BASE_URL}/tradingView/webhook`, {
       symbol,
       side,
+      testOrder,
     });
     return data;
   } catch (error: unknown) {
@@ -25,8 +26,8 @@ const tradingViewWebhook = async (symbol: string, side: string) => {
 
 export default function useTradingViewWebhook() {
   const mutation = useMutation({
-    mutationFn: (order: { symbol: string; side: string }) =>
-      tradingViewWebhook(order.symbol, order.side),
+    mutationFn: (order: { symbol: string; side: string; testOrder: boolean }) =>
+      tradingViewWebhook(order.symbol, order.side, order.testOrder),
   });
 
   return {

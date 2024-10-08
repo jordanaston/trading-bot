@@ -94,7 +94,11 @@ const Nav = ({ setIsLoggedIn, refetchBotStatus }: NavProps) => {
           </button>
           <button
             onClick={async () => {
-              tradingViewWebhook({ symbol: "SHIBUSDT", side: "SELL" });
+              tradingViewWebhook({
+                symbol: "SHIBUSDT",
+                side: "SELL",
+                testOrder: false,
+              });
               setTimeout(() => {
                 setIsDrawerOpen(false);
                 refetchBotStatus();
