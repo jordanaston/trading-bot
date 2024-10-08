@@ -42,7 +42,7 @@ function Login({ setIsLoggedIn }: LoginProps) {
   }, []);
 
   return (
-    <div className="font-mono flex items-center justify-center min-h-screen -mt-10">
+    <div className="font-mono flex items-center justify-center min-h-screen -mt-16">
       {loading ? (
         <div className="flex justify-center items-center mt-20">
           <DotLoader size={45} color="#fff" />
