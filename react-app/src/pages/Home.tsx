@@ -22,19 +22,7 @@ function Home({ setIsLoggedIn }: HomeProps) {
 
   return (
     <div className="font-mono mb-40">
-      <div className="flex justify-between items-center">
-        <p
-          className={`text-left text-[10px] ml-4 opacity-70 ${
-            botStatusActive ? "text-green-500" : "text-red-500"
-          }`}
-        >
-          ares {botStatusActive ? "activated" : "deactivated"}
-        </p>
-        <Nav
-          setIsLoggedIn={setIsLoggedIn}
-          refetchBotStatus={refetchBotStatus}
-        />
-      </div>
+      <Nav setIsLoggedIn={setIsLoggedIn} refetchBotStatus={refetchBotStatus} />
       <img src="/ares.png" alt="Ares" className="mx-auto mt-4 w-16 h-16" />
       <div className="flex justify-center mt-8 mb-10">
         {botStatusActive && (
