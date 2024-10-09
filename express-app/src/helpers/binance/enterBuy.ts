@@ -21,6 +21,7 @@ export const enterBuy = async (
         break;
       case 1:
         purchaseAmount = usdtCapital * 0.25;
+        usdtPercentage = 25;
         break;
       case 2:
         purchaseAmount = usdtCapital * 0.3333;
