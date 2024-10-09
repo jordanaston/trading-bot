@@ -48,7 +48,7 @@ export const enterBuy = async (
     const stepSize = parseFloat(lotSizeFilter?.stepSize || "1");
     const adjustedQuantity = Math.floor(quantity / stepSize) * stepSize;
     const preciseQuantity = parseFloat(adjustedQuantity.toFixed(precision));
-    const safetyMargin = 0.99;
+    const safetyMargin = 0.9999;
     const finalQuantity = parseFloat(
       (preciseQuantity * safetyMargin).toFixed(precision)
     );
