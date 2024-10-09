@@ -39,7 +39,7 @@ const TradeCard = ({ trade, botStatusActive }: TradeCardProps) => {
 
   return (
     <div
-      className={`${borderColor} p-4 rounded-md shadow-lg text-white my-4 max-w-[1100px] border mx-auto`}
+      className={`${borderColor} p-4 rounded-md shadow-lg text-white my-4 max-w-[1040px] border mx-auto`}
     >
       <div className="flex flex-wrap">
         <TradeDetail label="Symbol" value={trade.symbol} />
@@ -97,7 +97,7 @@ const TradeCard = ({ trade, botStatusActive }: TradeCardProps) => {
         {trade.change && (
           <TradeDetail
             label={<span className="text-white">Change</span>}
-            value={`${trade.change}%`}
+            value={`${trade.change > 0 ? '+' : ''}${trade.change}%`}
             className={trade.change > 0 ? "text-green-500" : "text-red-500"}
           />
         )}
