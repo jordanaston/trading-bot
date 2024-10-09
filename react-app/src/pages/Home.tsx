@@ -5,11 +5,7 @@ import TradeCard from "../components/TradeCard";
 import Nav from "../components/Nav";
 import useGetBotStatus from "../hooks/useGetBotStatus";
 
-type HomeProps = {
-  setIsLoggedIn: (isLoggedIn: boolean) => void;
-};
-
-function Home({ setIsLoggedIn }: HomeProps) {
+function Home() {
   const {
     data: trades,
     isLoading: tradesIsLoading,
@@ -22,7 +18,7 @@ function Home({ setIsLoggedIn }: HomeProps) {
 
   return (
     <div className="font-mono mb-40">
-      <Nav setIsLoggedIn={setIsLoggedIn} refetchBotStatus={refetchBotStatus} />
+      <Nav refetchBotStatus={refetchBotStatus} />
       <img src="/ares.png" alt="Ares" className="mx-auto mt-4 w-16 h-16" />
       <div className="flex justify-center mt-8 mb-10">
         {botStatusActive && (

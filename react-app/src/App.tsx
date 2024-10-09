@@ -1,19 +1,24 @@
-import { useState } from "react";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
 import "./App.css";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   return (
-    <>
-      {isLoggedIn ? (
-        <Home setIsLoggedIn={setIsLoggedIn} />
-      ) : (
-        <Login setIsLoggedIn={setIsLoggedIn} />
-      )}
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 

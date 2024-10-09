@@ -1,5 +1,6 @@
 import axios from "axios";
 import { BASE_URL } from "../constants/baseUrl";
+import { useMutation } from "@tanstack/react-query";
 
 const loginUser = async (username: string, password: string) => {
   try {
@@ -10,11 +11,28 @@ const loginUser = async (username: string, password: string) => {
     return data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      throw Error("Login failed.");
+      console.error(
+        "Login request failed with error:",
+        error.response?.data || error.message
+      );
+      throw new Error(error.response?.data || error.message);
     } else {
-      throw new Error("An unknown error occurred");
+      console.error("An unexpected error occurred:", (error as Error).message);
+      throw error;
     }
   }
 };
 
-export default loginUser;
+export default function useLoginUser() {
+  const mutation = useMutation({
+    mutationFn: (user: { username: string; password: string }) =>
+      loginUser(user.username, user.password),
+  });
+
+  return {
+    loginUser: mutation.mutate,
+    isLoading: mutation.isPending,
+    isError: mutation.isError,
+    error: mutation.error,
+  };
+}

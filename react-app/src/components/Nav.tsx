@@ -2,6 +2,7 @@ import { useState } from "react";
 import controlBot from "../hooks/useControlBot";
 import { DotLoader } from "react-spinners";
 import useTradingViewWebhook from "../hooks/useTradingViewWebhook";
+import { useNavigate } from "react-router-dom";
 
 enum ControlBot {
   ACTIVE = "active",
@@ -9,14 +10,16 @@ enum ControlBot {
 }
 
 type NavProps = {
-  setIsLoggedIn: (isLoggedIn: boolean) => void;
   refetchBotStatus: () => void;
 };
 
-const Nav = ({ setIsLoggedIn, refetchBotStatus }: NavProps) => {
+const Nav = ({ refetchBotStatus }: NavProps) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const navigate = useNavigate();
+
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
   const handleControlBot = async (control: string) => {

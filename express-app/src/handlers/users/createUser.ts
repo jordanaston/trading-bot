@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import User from "../../models/User";
+import bcrypt from "bcrypt";
 
 export const createUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-
-  const newUser = new User({ email, password });
+  const { username, password } = req.body;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ username, password: hashedPassword });
+
     await newUser.save();
     res.status(201).json(newUser);
   } catch (error: unknown) {

@@ -1,36 +1,28 @@
 import { useEffect, useState } from "react";
 import { DotLoader } from "react-spinners";
-import loginUser from "../hooks/useLoginuser";
+import { useNavigate } from "react-router-dom";
+import useLoginUser from "../hooks/useLoginuser";
 
-type LoginProps = {
-  setIsLoggedIn: (isLoggedIn: boolean) => void;
-};
+function Login() {
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const { loginUser, isLoading, error } = useLoginUser();
 
-function Login({ setIsLoggedIn }: LoginProps) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
-    setLoading(true);
-    setError(null);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      const loginResponse = await loginUser(username, password);
-
-      if (loginResponse.message === "Login successful") {
-        console.log("Login successful");
-        setIsLoggedIn(true);
-      }
+      await loginUser(
+        { username, password },
+        {
+          onSuccess: (data) => {
+            localStorage.setItem("token", data.token);
+            navigate("/home");
+          },
+        }
+      );
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred");
-      }
-    } finally {
-      setLoading(false);
+      console.error(err);
     }
   };
 
@@ -43,7 +35,7 @@ function Login({ setIsLoggedIn }: LoginProps) {
 
   return (
     <div className="font-mono flex items-center justify-center min-h-screen -mt-20">
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center items-center mt-20">
           <DotLoader size={45} color="#fff" />
         </div>
@@ -69,12 +61,12 @@ function Login({ setIsLoggedIn }: LoginProps) {
             <button
               onClick={handleLogin}
               className="mt-4 p-2 text-white border rounded focus:outline-none active:scale-95 transition-transform"
-              disabled={loading}
+              disabled={isLoading}
             >
               Enter
             </button>
 
-            {error && <p className="text-red-500 mt-2">{error}</p>}
+            {error && <p className="text-red-500 mt-2">Login failed.</p>}
           </div>
         </div>
       )}
