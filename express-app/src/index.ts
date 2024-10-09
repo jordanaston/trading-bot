@@ -20,8 +20,12 @@ app.use(express.json());
 
 app.use("/", routes);
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to Ares.");
+});
+
+app.get("/ping", (req: Request, res: Response) => {
+  res.status(200).send("Server is awake.");
 });
 
 const CONNECTION_URL = process.env.CONNECTION_URL as string;
