@@ -3,6 +3,7 @@ import controlBot from "../hooks/useControlBot";
 import { DotLoader } from "react-spinners";
 import useTradingViewWebhook from "../hooks/useTradingViewWebhook";
 import { useNavigate } from "react-router-dom";
+import useGetUSDTBalance from "../hooks/useGetUSDTBalance";
 
 enum ControlBot {
   ACTIVE = "active",
@@ -28,6 +29,9 @@ const Nav = ({ refetchBotStatus }: NavProps) => {
   };
 
   const { mutate: tradingViewWebhook, isLoading } = useTradingViewWebhook();
+
+  const { data: usdtBalance, isLoading: isLoadingUSDTBalance } =
+    useGetUSDTBalance();
 
   return (
     <div className="flex justify-end items-center p-4">
@@ -95,6 +99,20 @@ const Nav = ({ refetchBotStatus }: NavProps) => {
           >
             Deactivate Bot
           </button>
+          <div className="block w-full text-left text-sm py-2 px-4 mb-2 text-white">
+            {isLoadingUSDTBalance ? (
+              <DotLoader
+                size={28}
+                color="#fff"
+                loading={isLoadingUSDTBalance}
+              />
+            ) : (
+              <>
+                <div>USDT Balance</div>
+                <div className="text-yellow-400">${usdtBalance.balance}</div>
+              </>
+            )}
+          </div>
           <button
             onClick={async () => {
               tradingViewWebhook({
