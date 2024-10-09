@@ -62,8 +62,6 @@ export const enterBuy = async (
       quantity: finalAdjustedQuantity,
     };
 
-    purchaseAmount = +purchaseAmount.toFixed(4);
-
     const tradeData: TradeType = {
       symbol,
       side: OrderSide.BUY,
@@ -72,22 +70,35 @@ export const enterBuy = async (
       purchaseAmount,
       usdtPercentage,
       symbolPrice,
-      quantity: finalAdjustedQuantity,
+      quantity,
       timestamp: new Date(),
     };
-
-    if (testOrder === true) {
-      tradeData.testOrder = true;
-    }
 
     let buyOrder;
     try {
       if (testOrder !== true) {
         buyOrder = await binance.createBuyOrder(buyPayload);
+
+        if (buyOrder?.fills && buyOrder.fills.length > 0) {
+          const fill = buyOrder.fills[0];
+          const price = fill.price;
+          const qty = fill.qty;
+          const quoteQty = (parseFloat(price) * parseFloat(qty)).toFixed(8);
+
+          tradeData.symbolPrice = Number(price);
+          tradeData.quantity = Number(qty);
+          tradeData.purchaseAmount = Number(quoteQty);
+        } else {
+          console.error("No fills found in the buy order.");
+        }
       }
     } catch (orderError: any) {
       console.error("Error executing buy order:", orderError);
       tradeData.error = orderError.message as string;
+    }
+
+    if (testOrder === true) {
+      tradeData.testOrder = true;
     }
 
     const trade = new Trade(tradeData);

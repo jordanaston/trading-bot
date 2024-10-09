@@ -3,6 +3,7 @@ import { binance } from "..";
 import Trade from "../../models/Trade";
 import { TradeType } from "../../types/types";
 import binanceClient from "../../client/binanceClient";
+import { getChangePercentage } from "./getChangePercentage";
 
 export const enterSell = async (symbol: string, testOrder?: boolean) => {
   try {
@@ -36,7 +37,6 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
       quantity: finalAdjustedQuantity,
     };
 
-    let sellOrder;
     const tradeData: TradeType = {
       symbol,
       side: OrderSide.SELL,
@@ -47,26 +47,32 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
       usdtReceived: 0,
     };
 
+    let sellOrder;
     try {
       if (testOrder !== true) {
         sellOrder = await binance.createSellOrder(sellPayload);
         const usdtCapitalAfterSell = await binance.getUSDTValue();
-        tradeData.usdtReceived = usdtCapitalAfterSell;
-        const ticker = await binanceClient.prices({ symbol });
-        const tokenPriceInUSDT = parseFloat(ticker[symbol]);
-        tradeData.closeAmount = parseFloat(
-          (finalAdjustedQuantity * tokenPriceInUSDT).toFixed(4)
-        );
 
-        tradeData.change = parseFloat(
-          (
-            ((usdtCapitalAfterSell -
-              (usdtCapitalBeforeSell + tradeData.closeAmount)) /
-              (usdtCapitalBeforeSell + tradeData.closeAmount)) *
-            100
-          ).toFixed(4)
-        );
-        tradeData.symbolPrice = tokenPriceInUSDT;
+        if (sellOrder?.fills && sellOrder.fills.length > 0) {
+          const fill = sellOrder.fills[0];
+          const price = fill.price;
+          const qty = fill.qty;
+          const quoteQty = (parseFloat(price) * parseFloat(qty)).toFixed(8);
+
+          const completedSellAmount = usdtCapitalBeforeSell + Number(quoteQty);
+          const change = await getChangePercentage(
+            completedSellAmount,
+            usdtCapitalAfterSell
+          );
+
+          tradeData.symbolPrice = Number(price);
+          tradeData.quantity = Number(qty);
+          tradeData.closeAmount = Number(quoteQty);
+          tradeData.usdtReceived = usdtCapitalAfterSell;
+          tradeData.change = change;
+        } else {
+          console.error("No fills found in the sell order.");
+        }
       }
     } catch (orderError: any) {
       console.error("Error executing sell order:", orderError);
