@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { DotLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-import useLoginUser from "../hooks/useLoginUser";
+import useLoginUser from "../hooks/useLoginuser";
 
 function Login() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { loginUser, isLoading, error } = useLoginUser();
-
-  //
 
   const navigate = useNavigate();
 

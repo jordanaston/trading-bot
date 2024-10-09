@@ -23,8 +23,6 @@ const loginUser = async (username: string, password: string) => {
   }
 };
 
-//
-
 export default function useLoginUser() {
   const mutation = useMutation({
     mutationFn: (user: { username: string; password: string }) =>
