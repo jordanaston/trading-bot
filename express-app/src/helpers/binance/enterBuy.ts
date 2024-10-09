@@ -12,22 +12,27 @@ export const enterBuy = async (
   try {
     const usdtCapital = await binance.getUSDTValue();
     let purchaseAmount: number = 0;
+    let usdtPercentage: number = 0;
 
     switch (buyCount) {
       case 0:
         purchaseAmount = usdtCapital * 0.2;
+        usdtPercentage = 20;
         break;
       case 1:
         purchaseAmount = usdtCapital * 0.25;
         break;
       case 2:
         purchaseAmount = usdtCapital * 0.3333;
+        usdtPercentage = 33.33;
         break;
       case 3:
         purchaseAmount = usdtCapital * 0.5;
+        usdtPercentage = 50;
         break;
       case 4:
         purchaseAmount = usdtCapital;
+        usdtPercentage = 100;
         break;
     }
 
@@ -62,6 +67,7 @@ export const enterBuy = async (
       type: "MARKET",
       usdtCapital,
       purchaseAmount,
+      usdtPercentage,
       symbolPrice,
       quantity: finalAdjustedQuantity,
       timestamp: new Date(),

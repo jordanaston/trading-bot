@@ -30,8 +30,11 @@ const Nav = ({ refetchBotStatus }: NavProps) => {
 
   const { mutate: tradingViewWebhook, isLoading } = useTradingViewWebhook();
 
-  const { data: usdtBalance, isLoading: isLoadingUSDTBalance } =
-    useGetUSDTBalance();
+  const {
+    data: usdtBalance,
+    isLoading: isLoadingUSDTBalance,
+    isError: isErrorUSDTBalance,
+  } = useGetUSDTBalance();
 
   return (
     <div className="flex justify-end items-center p-4">
@@ -106,6 +109,8 @@ const Nav = ({ refetchBotStatus }: NavProps) => {
                 color="#fff"
                 loading={isLoadingUSDTBalance}
               />
+            ) : isErrorUSDTBalance ? (
+              <div className="text-red-400">Failed to load USDT.</div>
             ) : (
               <>
                 <div>USDT Balance</div>

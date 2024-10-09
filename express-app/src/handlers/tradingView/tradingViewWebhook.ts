@@ -9,6 +9,7 @@ export enum OrderSide {
 }
 
 let buyCount = 0;
+let lastTrade: OrderSide | null = null;
 
 export const tradingViewWebhook = async (req: Request, res: Response) => {
   try {
@@ -34,11 +35,24 @@ export const tradingViewWebhook = async (req: Request, res: Response) => {
 
       const buySuccess = await enterBuy(symbol, buyCount, testOrder);
 
-      if (buySuccess && testOrder !== true) buyCount++;
+      if (buySuccess && testOrder !== true) {
+        buyCount++;
+        lastTrade = OrderSide.BUY;
+      }
     } else if (side === OrderSide.SELL) {
+      if (lastTrade === OrderSide.SELL) {
+        const repeatedSellMessage =
+          "Repeated SELL detected. Skipping execution.";
+        console.log(repeatedSellMessage);
+        return res.status(200).json({ message: repeatedSellMessage });
+      }
+
       const sellSuccess = await enterSell(symbol, testOrder);
 
-      if (sellSuccess && testOrder !== true) buyCount = 0;
+      if (sellSuccess && testOrder !== true) {
+        buyCount = 0;
+        lastTrade = OrderSide.SELL;
+      }
     }
 
     res.status(200).json({ message: "Webhook triggered successfully" });

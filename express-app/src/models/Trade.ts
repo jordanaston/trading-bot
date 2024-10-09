@@ -6,11 +6,13 @@ const tradeSchema: Schema = new Schema({
   type: { type: String, required: true },
   usdtCapital: { type: Number, required: false },
   purchaseAmount: { type: Number, required: false },
+  usdtPercentage: { type: Number, required: false },
   symbolPrice: { type: Number, required: false },
   quantity: { type: Number, required: true },
   timestamp: { type: Date, required: true },
   testOrder: { type: Boolean, required: false },
   usdtReceived: { type: Number, required: false },
+  tokenSoldValue: { type: Number, required: false },
   error: { type: String, required: false },
 });
 

@@ -35,7 +35,7 @@ const TradeCard = ({ trade, botStatusActive }: TradeCardProps) => {
 
   return (
     <div
-      className={`${borderColor} p-4 rounded-md shadow-lg text-white my-4 max-w-[950px] border mx-auto`}
+      className={`${borderColor} p-4 rounded-md shadow-lg text-white my-4 max-w-[1000px] border mx-auto`}
     >
       <div className="flex flex-wrap">
         <TradeDetail label="Symbol" value={trade.symbol} />
@@ -50,13 +50,25 @@ const TradeCard = ({ trade, botStatusActive }: TradeCardProps) => {
             value={`$${trade.purchaseAmount}`}
           />
         )}
+        {trade.usdtPercentage && (
+          <TradeDetail label="Percentage" value={`${trade.usdtPercentage}%`} />
+        )}
+        {trade.tokenSoldValue && (
+          <TradeDetail
+            label="Token Sold Value"
+            value={`$${trade.tokenSoldValue}`}
+          />
+        )}
+        {trade.side === "SELL" && (
+          <TradeDetail
+            label="USDT Balance After Sell"
+            value={`$${trade.usdtReceived}`}
+          />
+        )}
         {trade.symbolPrice && (
           <TradeDetail label="Price" value={`$${trade.symbolPrice}`} />
         )}
         <TradeDetail label="Quantity" value={trade.quantity} />
-        {trade.side === "SELL" && (
-          <TradeDetail label="USDT Received" value={`$${trade.usdtReceived}`} />
-        )}
         <TradeDetail
           label="Timestamp"
           value={new Date(trade.timestamp).toLocaleString()}

@@ -41,6 +41,7 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
       side: OrderSide.SELL,
       type: "MARKET",
       quantity: finalAdjustedQuantity,
+      usdtPercentage: 100,
       timestamp: new Date(),
       usdtReceived: 0,
     };
@@ -50,6 +51,9 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
         sellOrder = await binance.createSellOrder(sellPayload);
         const usdtCapital = await binance.getUSDTValue();
         tradeData.usdtReceived = usdtCapital;
+        const ticker = await binanceClient.prices({ symbol });
+        const tokenPriceInUSDT = parseFloat(ticker[symbol]);
+        tradeData.tokenSoldValue = finalAdjustedQuantity * tokenPriceInUSDT;
       }
     } catch (orderError: any) {
       console.error("Error executing sell order:", orderError);
