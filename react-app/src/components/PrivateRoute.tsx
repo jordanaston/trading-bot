@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 type PrivateRouteProps = {
   children: ReactNode;
@@ -7,9 +7,8 @@ type PrivateRouteProps = {
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const token = localStorage.getItem("token");
-  const location = useLocation();
 
-  if (!token && location.pathname === "/home") {
+  if (!token) {
     return <Navigate to="/" replace />;
   }
 
