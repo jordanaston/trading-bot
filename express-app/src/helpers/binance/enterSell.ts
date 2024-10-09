@@ -23,7 +23,7 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
     const stepSize = parseFloat(lotSizeFilter?.stepSize || "1");
     const adjustedQuantity = Math.floor(tokenBalance / stepSize) * stepSize;
     const preciseQuantity = parseFloat(adjustedQuantity.toFixed(precision));
-    const safetyMargin = 0.9999;
+    const safetyMargin = 0.999;
     const finalQuantity = parseFloat(
       (preciseQuantity * safetyMargin).toFixed(precision)
     );
