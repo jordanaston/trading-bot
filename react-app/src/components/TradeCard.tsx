@@ -9,13 +9,17 @@ const TradeDetail = ({
   label,
   value,
   className = "",
+  minWidth = "auto",
 }: {
-  label: string;
+  label: React.ReactNode;
   value: string | number;
   className?: string;
+  minWidth?: string;
 }) => (
   <div className={`text-xs mr-4 py-2 md:py-0 ${className}`}>
-    <span className="font-semibold block">{label}</span>
+    <span className="font-semibold block" style={{ minWidth }}>
+      {label}
+    </span>
     {value}
   </div>
 );
@@ -35,40 +39,53 @@ const TradeCard = ({ trade, botStatusActive }: TradeCardProps) => {
 
   return (
     <div
-      className={`${borderColor} p-4 rounded-md shadow-lg text-white my-4 max-w-[1000px] border mx-auto`}
+      className={`${borderColor} p-4 rounded-md shadow-lg text-white my-4 max-w-[1100px] border mx-auto`}
     >
       <div className="flex flex-wrap">
         <TradeDetail label="Symbol" value={trade.symbol} />
         <TradeDetail label="Side" value={trade.side} />
         <TradeDetail label="Type" value={trade.type} />
         {trade.usdtCapital && (
-          <TradeDetail label="USDT Capital" value={`$${trade.usdtCapital}`} />
+          <TradeDetail
+            label="USDT Capital"
+            value={`$${trade.usdtCapital}`}
+            minWidth="100px"
+          />
+        )}
+        {trade.side === "SELL" && (
+          <TradeDetail
+            label="USDT Capital"
+            value={`$${trade.usdtReceived}`}
+            minWidth="100px"
+          />
         )}
         {trade.purchaseAmount && (
           <TradeDetail
             label="Purchase Amount"
             value={`$${trade.purchaseAmount}`}
+            minWidth="110px"
+          />
+        )}
+        {trade.closeAmount && (
+          <TradeDetail
+            label="Close Amount"
+            value={`$${trade.closeAmount}`}
+            minWidth="110px"
           />
         )}
         {trade.usdtPercentage && (
           <TradeDetail label="Percentage" value={`${trade.usdtPercentage}%`} />
         )}
-        {trade.tokenSoldValue && (
-          <TradeDetail
-            label="Token Sold Value"
-            value={`$${trade.tokenSoldValue}`}
-          />
-        )}
-        {trade.side === "SELL" && (
-          <TradeDetail
-            label="USDT Balance After Sell"
-            value={`$${trade.usdtReceived}`}
-          />
-        )}
+
         {trade.symbolPrice && (
-          <TradeDetail label="Price" value={`$${trade.symbolPrice}`} />
+          <TradeDetail
+            label="Price"
+            value={`$${trade.symbolPrice}`}
+            minWidth="90px"
+          />
         )}
-        <TradeDetail label="Quantity" value={trade.quantity} />
+        <TradeDetail label="Quantity" value={trade.quantity} minWidth="70px" />
+
         <TradeDetail
           label="Timestamp"
           value={new Date(trade.timestamp).toLocaleString()}
@@ -77,6 +94,13 @@ const TradeCard = ({ trade, botStatusActive }: TradeCardProps) => {
           label="Order"
           value={trade.testOrder ? "TEST" : "BINANCE"}
         />
+        {trade.change && (
+          <TradeDetail
+            label={<span className="text-white">Change</span>}
+            value={`${trade.change}%`}
+            className={trade.change > 0 ? "text-green-500" : "text-red-500"}
+          />
+        )}
         {trade.error && (
           <TradeDetail
             label="Error"

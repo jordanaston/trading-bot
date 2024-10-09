@@ -7,6 +7,7 @@ import binanceClient from "../../client/binanceClient";
 export const enterSell = async (symbol: string, testOrder?: boolean) => {
   try {
     const tokenBalance = await binance.getTokenBalance(symbol);
+    const usdtCapitalBeforeSell = await binance.getUSDTValue();
 
     if (!tokenBalance || tokenBalance <= 0) {
       throw new Error("Insufficient token balance.");
@@ -21,7 +22,7 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
     const stepSize = parseFloat(lotSizeFilter?.stepSize || "1");
     const adjustedQuantity = Math.floor(tokenBalance / stepSize) * stepSize;
     const preciseQuantity = parseFloat(adjustedQuantity.toFixed(precision));
-    const safetyMargin = 0.999;
+    const safetyMargin = 0.99;
     const finalQuantity = parseFloat(
       (preciseQuantity * safetyMargin).toFixed(precision)
     );
@@ -49,11 +50,23 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
     try {
       if (testOrder !== true) {
         sellOrder = await binance.createSellOrder(sellPayload);
-        const usdtCapital = await binance.getUSDTValue();
-        tradeData.usdtReceived = usdtCapital;
+        const usdtCapitalAfterSell = await binance.getUSDTValue();
+        tradeData.usdtReceived = usdtCapitalAfterSell;
         const ticker = await binanceClient.prices({ symbol });
         const tokenPriceInUSDT = parseFloat(ticker[symbol]);
-        tradeData.tokenSoldValue = finalAdjustedQuantity * tokenPriceInUSDT;
+        tradeData.closeAmount = parseFloat(
+          (finalAdjustedQuantity * tokenPriceInUSDT).toFixed(4)
+        );
+
+        tradeData.change = parseFloat(
+          (
+            ((usdtCapitalAfterSell -
+              (usdtCapitalBeforeSell + tradeData.closeAmount)) /
+              (usdtCapitalBeforeSell + tradeData.closeAmount)) *
+            100
+          ).toFixed(4)
+        );
+        tradeData.symbolPrice = tokenPriceInUSDT;
       }
     } catch (orderError: any) {
       console.error("Error executing sell order:", orderError);

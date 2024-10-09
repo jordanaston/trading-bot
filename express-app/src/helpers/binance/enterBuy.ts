@@ -48,7 +48,7 @@ export const enterBuy = async (
     const stepSize = parseFloat(lotSizeFilter?.stepSize || "1");
     const adjustedQuantity = Math.floor(quantity / stepSize) * stepSize;
     const preciseQuantity = parseFloat(adjustedQuantity.toFixed(precision));
-    const safetyMargin = 0.98;
+    const safetyMargin = 0.99;
     const finalQuantity = parseFloat(
       (preciseQuantity * safetyMargin).toFixed(precision)
     );
@@ -61,6 +61,8 @@ export const enterBuy = async (
       type: "MARKET",
       quantity: finalAdjustedQuantity,
     };
+
+    purchaseAmount = +purchaseAmount.toFixed(4);
 
     const tradeData: TradeType = {
       symbol,

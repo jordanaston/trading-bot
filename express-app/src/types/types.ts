@@ -10,6 +10,7 @@ export interface TradeType {
   timestamp: Date;
   testOrder?: boolean;
   usdtReceived?: number;
-  tokenSoldValue?: number;
+  closeAmount?: number;
+  change?: number;
   error?: string;
 }
