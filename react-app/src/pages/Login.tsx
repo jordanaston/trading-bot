@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { DotLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
-import useLoginUser from "../hooks/useLoginuser";
+import useLoginUser from "../hooks/useLoginUser";
 
 function Login() {
   const [username, setUsername] = useState<string>("");
@@ -23,6 +23,12 @@ function Login() {
       );
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      handleLogin();
     }
   };
 
@@ -53,6 +59,7 @@ function Login() {
             <input
               type="password"
               placeholder="password"
+              onKeyDown={handleKeyDown}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="mt-4 p-2 border rounded bg-transparent text-white focus:outline-none w-64"
