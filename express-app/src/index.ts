@@ -21,7 +21,7 @@ app.use(express.json());
 app.use("/", routes);
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the Ares.");
+  res.send("Welcome to Ares.");
 });
 
 const CONNECTION_URL = process.env.CONNECTION_URL as string;
