@@ -53,11 +53,11 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
         sellOrder = await binance.createSellOrder(sellPayload);
         const usdtCapitalAfterSell = await binance.getUSDTValue();
 
-        if (sellOrder?.fills && sellOrder.fills.length > 0) {
-          const fill = sellOrder.fills[0];
-          const price = fill.price;
-          const qty = fill.qty;
-          const quoteQty = (parseFloat(price) * parseFloat(qty)).toFixed(8);
+        if (sellOrder) {
+          const fill = sellOrder?.fills?.[0];
+          const symbolPrice = parseFloat(fill?.price || "");
+          const quantity = parseFloat(sellOrder.executedQty);
+          const closeAmount = parseFloat(sellOrder.cummulativeQuoteQty);
 
           const botData = await Bot.findOne({});
           const usdtCapitalBeforeBuy = botData?.usdtCapital as number;
@@ -69,9 +69,9 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
             usdtCapitalAfterSell
           );
 
-          tradeData.symbolPrice = Number(price);
-          tradeData.quantity = Number(qty);
-          tradeData.closeAmount = Number(quoteQty);
+          tradeData.symbolPrice = symbolPrice;
+          tradeData.quantity = quantity;
+          tradeData.closeAmount = closeAmount;
           tradeData.usdtReceived = usdtCapitalAfterSell;
           tradeData.change = change;
         } else {
