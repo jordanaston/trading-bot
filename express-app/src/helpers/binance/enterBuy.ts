@@ -87,22 +87,15 @@ export const enterBuy = async (
       if (testOrder !== true) {
         buyOrder = await binance.createBuyOrder(buyPayload);
 
-        if (buyOrder?.fills && buyOrder.fills.length > 0) {
-          const fill = buyOrder.fills[0];
-          const price = fill.price;
-          const qty = fill.qty;
+        if (buyOrder) {
+          const fill = buyOrder?.fills?.[0];
+          const symbolPrice = parseFloat(fill?.price || "");
+          const quantity = parseFloat(buyOrder.executedQty);
+          const purchaseAmount = parseFloat(buyOrder.cummulativeQuoteQty);
 
-          const quoteQty = (parseFloat(price) * parseFloat(qty)).toFixed(8);
-          console.log("Fill Details Before Assignment:", {
-            fill,
-            price,
-            qty,
-            quoteQty,
-          });
-
-          tradeData.symbolPrice = Number(price);
-          tradeData.quantity = Number(qty);
-          tradeData.purchaseAmount = Number(quoteQty);
+          tradeData.symbolPrice = symbolPrice;
+          tradeData.quantity = quantity;
+          tradeData.purchaseAmount = purchaseAmount;
 
           console.log("Trade Data After Assignment:", {
             symbolPrice: tradeData.symbolPrice,
