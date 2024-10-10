@@ -43,9 +43,7 @@ export const tradingViewWebhook = async (req: Request, res: Response) => {
 
       const buySuccess = await enterBuy(symbol, Number(buyCount), testOrder);
 
-      if (buySuccess?.status === "FILLED") {
-        console.log("BUY FILLED");
-      }
+      console.log("BUY SUCCESS: ", buySuccess);
 
       if (buySuccess && testOrder !== true) {
         buyCount = Number(buyCount) + 1;
@@ -63,9 +61,7 @@ export const tradingViewWebhook = async (req: Request, res: Response) => {
 
       const sellSuccess = await enterSell(symbol, testOrder);
 
-      if (sellSuccess?.status === "FILLED") {
-        console.log("SELL FILLED");
-      }
+      console.log("SELL SUCCESS: ", sellSuccess);
 
       if (sellSuccess && testOrder !== true) {
         buyCount = 0;
