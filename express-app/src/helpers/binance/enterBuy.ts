@@ -68,6 +68,8 @@ export const enterBuy = async (
       quantity: finalAdjustedQuantity,
     };
 
+    console.log("BUY PAYLOAD: ", buyPayload);
+
     const tradeData: TradeType = {
       symbol,
       side: OrderSide.BUY,
@@ -89,11 +91,24 @@ export const enterBuy = async (
           const fill = buyOrder.fills[0];
           const price = fill.price;
           const qty = fill.qty;
+
           const quoteQty = (parseFloat(price) * parseFloat(qty)).toFixed(8);
+          console.log("Fill Details Before Assignment:", {
+            fill,
+            price,
+            qty,
+            quoteQty,
+          });
 
           tradeData.symbolPrice = Number(price);
           tradeData.quantity = Number(qty);
           tradeData.purchaseAmount = Number(quoteQty);
+
+          console.log("Trade Data After Assignment:", {
+            symbolPrice: tradeData.symbolPrice,
+            quantity: tradeData.quantity,
+            purchaseAmount: tradeData.purchaseAmount,
+          });
         } else {
           console.error("No fills found in the buy order.");
         }
@@ -106,6 +121,8 @@ export const enterBuy = async (
     if (testOrder === true) {
       tradeData.testOrder = true;
     }
+
+    console.log("TRADE DATA FOR DB: ", tradeData);
 
     const trade = new Trade(tradeData);
     await trade.save();
