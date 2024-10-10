@@ -53,7 +53,7 @@ const DailyTradesAccordion = ({
             header={
               <div
                 onClick={() => toggleAccordion(index)}
-                className="flex justify-center items-center text-white cursor-pointer border p-4 rounded-md mt-4 hover:bg-gray-600 hover:bg-opacity-20  lg:min-w-[1040px]"
+                className="flex justify-center items-center text-white cursor-pointer border p-4 rounded-md mt-4 sm:hover:bg-gray-600 sm:hover:bg-opacity-20 lg:min-w-[1040px]"
               >
                 <span>{date}</span>
                 <div className="text-xl ml-2">
