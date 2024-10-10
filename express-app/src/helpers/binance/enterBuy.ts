@@ -3,6 +3,7 @@ import { binance } from "..";
 import Trade from "../../models/Trade";
 import { TradeType } from "../../types/types";
 import binanceClient from "../../client/binanceClient";
+import Bot from "../../models/Bot";
 
 export const enterBuy = async (
   symbol: string,
@@ -11,6 +12,11 @@ export const enterBuy = async (
 ) => {
   try {
     const usdtCapital = await binance.getUSDTValue();
+
+    if (buyCount === 0) {
+      await Bot.updateOne({}, { usdtCapital });
+    }
+
     let purchaseAmount: number = 0;
     let usdtPercentage: number = 0;
 

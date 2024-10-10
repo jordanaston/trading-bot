@@ -4,11 +4,11 @@ import Trade from "../../models/Trade";
 import { TradeType } from "../../types/types";
 import binanceClient from "../../client/binanceClient";
 import { getChangePercentage } from "./getChangePercentage";
+import Bot from "../../models/Bot";
 
 export const enterSell = async (symbol: string, testOrder?: boolean) => {
   try {
     const tokenBalance = await binance.getTokenBalance(symbol);
-    const usdtCapitalBeforeSell = await binance.getUSDTValue();
 
     if (!tokenBalance || tokenBalance <= 0) {
       throw new Error("Insufficient token balance.");
@@ -59,9 +59,13 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
           const qty = fill.qty;
           const quoteQty = (parseFloat(price) * parseFloat(qty)).toFixed(8);
 
-          const completedSellAmount = usdtCapitalBeforeSell + Number(quoteQty);
+          const botData = await Bot.findOne({});
+          const usdtCapitalBeforeBuy = botData?.usdtCapital as number;
+
+          console.log("USDT CAPITAL BEFORE BUY: ", usdtCapitalBeforeBuy);
+          console.log("USDT CAPITAL AFTER SELL: ", usdtCapitalAfterSell);
           const change = await getChangePercentage(
-            completedSellAmount,
+            usdtCapitalBeforeBuy,
             usdtCapitalAfterSell
           );
 
