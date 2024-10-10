@@ -37,6 +37,8 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
       quantity: finalAdjustedQuantity,
     };
 
+    console.log("SELL PAYLOAD: ", sellPayload);
+
     const tradeData: TradeType = {
       symbol,
       side: OrderSide.SELL,
@@ -92,6 +94,8 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
     if (testOrder === true) {
       tradeData.testOrder = true;
     }
+
+    console.log("TRADE DATA FOR DB: ", tradeData);
 
     const trade = new Trade(tradeData);
     await trade.save();
