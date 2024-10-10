@@ -39,7 +39,7 @@ const TradeCard = ({ trade, botStatusActive }: TradeCardProps) => {
 
   return (
     <div
-      className={`${borderColor} p-4 rounded-md shadow-xl text-white mt-4 max-w-[1040px] border mx-auto`}
+      className={`${borderColor} p-4 rounded-md shadow-xl text-white mt-4 w-full xl:w-[1040px] max-w-[1040px] border`}
     >
       <div className="flex flex-wrap">
         <TradeDetail label="Symbol" value={trade.symbol} />

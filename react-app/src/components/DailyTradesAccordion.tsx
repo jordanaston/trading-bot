@@ -1,4 +1,3 @@
-import { Accordion, AccordionItem } from "@szhsin/react-accordion";
 import { TradeType } from "../types/types";
 import TradeCard from "./TradeCard";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
@@ -38,31 +37,41 @@ const DailyTradesAccordion = ({
 }: DailyTradesAccordionProps) => {
   const groupedTrades = groupTradesByDate(trades);
   const dates = Object.keys(groupedTrades);
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const todayDateKey = formatDate(new Date());
+  const initialOpenIndices =
+    dates.indexOf(todayDateKey) >= 0 ? [dates.indexOf(todayDateKey)] : [];
+
+  const [openIndices, setOpenIndices] = useState<number[]>(initialOpenIndices);
 
   const toggleAccordion = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+    setOpenIndices((prevOpenIndices) =>
+      prevOpenIndices.includes(index)
+        ? prevOpenIndices.filter((i) => i !== index)
+        : [...prevOpenIndices, index]
+    );
   };
 
   return (
-    <div className="flex justify-center items-center">
-      <Accordion>
-        {dates.map((date, index) => (
-          <AccordionItem
+    <div className="flex flex-col justify-center items-center">
+      {dates.map((date, index) => (
+        <>
+          <button
             key={date}
-            header={
-              <div
-                onClick={() => toggleAccordion(index)}
-                className="flex justify-center items-center text-white cursor-pointer border p-4 rounded-md mt-4 sm:hover:bg-gray-600 sm:hover:bg-opacity-20 lg:min-w-[1040px]"
-              >
-                <span>{date}</span>
-                <div className="text-xl ml-2">
-                  {openIndex === index ? <FiChevronUp /> : <FiChevronDown />}
-                </div>
-              </div>
-            }
+            onClick={() => toggleAccordion(index)}
+            className="flex justify-center items-center text-white cursor-pointer border p-4 rounded-md mt-4 w-full max-w-[1040px]"
           >
-            {openIndex === index &&
+            <span>{date}</span>
+            <div className="text-xl ml-2">
+              {openIndices.includes(index) ? (
+                <FiChevronUp />
+              ) : (
+                <FiChevronDown />
+              )}
+            </div>
+          </button>
+
+          <div>
+            {openIndices.includes(index) &&
               (groupedTrades[date].length > 0 ? (
                 groupedTrades[date].map((trade) => (
                   <TradeCard
@@ -74,9 +83,9 @@ const DailyTradesAccordion = ({
               ) : (
                 <p className="text-gray-500">No trades for this date.</p>
               ))}
-          </AccordionItem>
-        ))}
-      </Accordion>
+          </div>
+        </>
+      ))}
     </div>
   );
 };
