@@ -74,6 +74,12 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
           tradeData.closeAmount = closeAmount;
           tradeData.usdtReceived = usdtCapitalAfterSell;
           tradeData.change = change;
+
+          console.log("Sell Data After Assignment:", {
+            symbolPrice: tradeData.symbolPrice,
+            quantity: tradeData.quantity,
+            closeAmount: tradeData.closeAmount,
+          });
         } else {
           console.error("No fills found in the sell order.");
         }

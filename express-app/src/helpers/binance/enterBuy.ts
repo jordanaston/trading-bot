@@ -97,7 +97,7 @@ export const enterBuy = async (
           tradeData.quantity = quantity;
           tradeData.purchaseAmount = purchaseAmount;
 
-          console.log("Trade Data After Assignment:", {
+          console.log("Buy Data After Assignment:", {
             symbolPrice: tradeData.symbolPrice,
             quantity: tradeData.quantity,
             purchaseAmount: tradeData.purchaseAmount,
