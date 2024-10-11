@@ -16,7 +16,10 @@ exports.enterSell = void 0;
 const __1 = require("..");
 const Trade_1 = __importDefault(require("../../models/Trade"));
 const binanceClient_1 = __importDefault(require("../../client/binanceClient"));
+const getChangePercentage_1 = require("./getChangePercentage");
+const Bot_1 = __importDefault(require("../../models/Bot"));
 const enterSell = (symbol, testOrder) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         const tokenBalance = yield __1.binance.getTokenBalance(symbol);
         if (!tokenBalance || tokenBalance <= 0) {
@@ -38,20 +41,45 @@ const enterSell = (symbol, testOrder) => __awaiter(void 0, void 0, void 0, funct
             type: "MARKET",
             quantity: finalAdjustedQuantity,
         };
-        let sellOrder;
+        console.log("SELL PAYLOAD: ", sellPayload);
         const tradeData = {
             symbol,
             side: "SELL" /* OrderSide.SELL */,
             type: "MARKET",
             quantity: finalAdjustedQuantity,
+            usdtPercentage: 100,
             timestamp: new Date(),
             usdtReceived: 0,
         };
+        let sellOrder;
         try {
             if (testOrder !== true) {
                 sellOrder = yield __1.binance.createSellOrder(sellPayload);
-                const usdtCapital = yield __1.binance.getUSDTValue();
-                tradeData.usdtReceived = usdtCapital;
+                const usdtCapitalAfterSell = yield __1.binance.getUSDTValue();
+                if (sellOrder) {
+                    const fill = (_a = sellOrder === null || sellOrder === void 0 ? void 0 : sellOrder.fills) === null || _a === void 0 ? void 0 : _a[0];
+                    const symbolPrice = parseFloat((fill === null || fill === void 0 ? void 0 : fill.price) || "");
+                    const quantity = parseFloat(sellOrder.executedQty);
+                    const closeAmount = parseFloat(sellOrder.cummulativeQuoteQty);
+                    const botData = yield Bot_1.default.findOne({});
+                    const usdtCapitalBeforeBuy = botData === null || botData === void 0 ? void 0 : botData.usdtCapital;
+                    console.log("USDT CAPITAL BEFORE BUY: ", usdtCapitalBeforeBuy);
+                    console.log("USDT CAPITAL AFTER SELL: ", usdtCapitalAfterSell);
+                    const change = yield (0, getChangePercentage_1.getChangePercentage)(usdtCapitalBeforeBuy, usdtCapitalAfterSell);
+                    tradeData.symbolPrice = symbolPrice;
+                    tradeData.quantity = quantity;
+                    tradeData.closeAmount = closeAmount;
+                    tradeData.usdtReceived = usdtCapitalAfterSell;
+                    tradeData.change = change;
+                    console.log("Sell Data After Assignment:", {
+                        symbolPrice: tradeData.symbolPrice,
+                        quantity: tradeData.quantity,
+                        closeAmount: tradeData.closeAmount,
+                    });
+                }
+                else {
+                    console.error("No fills found in the sell order.");
+                }
             }
         }
         catch (orderError) {
@@ -61,6 +89,7 @@ const enterSell = (symbol, testOrder) => __awaiter(void 0, void 0, void 0, funct
         if (testOrder === true) {
             tradeData.testOrder = true;
         }
+        console.log("TRADE DATA FOR DB: ", tradeData);
         const trade = new Trade_1.default(tradeData);
         yield trade.save();
         return sellOrder;

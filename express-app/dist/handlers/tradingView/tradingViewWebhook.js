@@ -8,42 +8,69 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.tradingViewWebhook = exports.OrderSide = void 0;
 const enterBuy_1 = require("../../helpers/binance/enterBuy");
 const enterSell_1 = require("../../helpers/binance/enterSell");
-const betBotStatus_1 = require("../../helpers/binance/betBotStatus");
+const Bot_1 = __importDefault(require("../../models/Bot"));
 var OrderSide;
 (function (OrderSide) {
     OrderSide["BUY"] = "BUY";
     OrderSide["SELL"] = "SELL";
 })(OrderSide || (exports.OrderSide = OrderSide = {}));
-let buyCount = 0;
 const tradingViewWebhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { symbol, side, testOrder } = req.body;
-        const botStatusActive = yield (0, betBotStatus_1.getBotStatus)();
+        const botData = (yield Bot_1.default.findOne()) || {
+            buyCount: 0,
+            lastTrade: null,
+            active: true,
+        };
+        let { buyCount, lastTrade, active: botStatusActive } = botData;
+        console.log("BOT DATA: ", botData);
+        console.log("REQUEST BODY: ", req.body, "BUY COUNT: ", buyCount);
         if (!symbol || !side) {
+            console.log("Invalid request data.");
             return res.status(400).json({ message: "Invalid request data." });
         }
         if (botStatusActive === false) {
+            console.log("Bot is inactive.");
             return res.status(200).json({ message: "Bot is inactive." });
         }
         if (side === OrderSide.BUY) {
-            if (buyCount >= 5) {
+            if (Number(buyCount) >= 5) {
                 const maxBuysMessage = "Maximum number of buys reached. Waiting for SELL alert...";
-                console.log(maxBuysMessage);
+                console.log(maxBuysMessage, "BUY COUNT: ", buyCount);
                 return res.status(200).json({ message: maxBuysMessage });
             }
-            const buySuccess = yield (0, enterBuy_1.enterBuy)(symbol, buyCount, testOrder);
-            if (buySuccess && testOrder !== true)
-                buyCount++;
+            const buySuccess = yield (0, enterBuy_1.enterBuy)(symbol, Number(buyCount), testOrder);
+            console.log("BUY SUCCESS: ", buySuccess);
+            if (buySuccess && testOrder !== true) {
+                buyCount = Number(buyCount) + 1;
+                lastTrade = OrderSide.BUY;
+                yield Bot_1.default.updateOne({}, { buyCount, lastTrade });
+                console.log("BUY COUNT + LAST TRADE: ", buyCount, lastTrade);
+            }
         }
         else if (side === OrderSide.SELL) {
+            if (lastTrade === OrderSide.SELL) {
+                const repeatedSellMessage = "Repeated SELL detected. Skipping execution.";
+                console.log(repeatedSellMessage);
+                return res.status(200).json({ message: repeatedSellMessage });
+            }
             const sellSuccess = yield (0, enterSell_1.enterSell)(symbol, testOrder);
-            if (sellSuccess && testOrder !== true)
+            console.log("SELL SUCCESS: ", sellSuccess);
+            if (sellSuccess && testOrder !== true) {
                 buyCount = 0;
+                lastTrade = OrderSide.SELL;
+                yield Bot_1.default.updateOne({}, { buyCount, lastTrade });
+                console.log("BUY COUNT + LAST TRADE: ", buyCount, lastTrade);
+            }
         }
+        console.log("Webhook triggered successfully");
         res.status(200).json({ message: "Webhook triggered successfully" });
     }
     catch (error) {

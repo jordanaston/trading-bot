@@ -17,15 +17,48 @@ const formatDate = (date: Date) => {
   });
 };
 
+const formatResponsiveDate = (date: Date, isSmallScreen: boolean) => {
+  if (isSmallScreen) {
+    return new Intl.DateTimeFormat(undefined, {
+      weekday: "short",
+      month: "numeric",
+      day: "numeric",
+      year: "numeric",
+    })
+      .format(date)
+      .replace(",", "");
+  }
+  return formatDate(date);
+};
+
 const groupTradesByDate = (trades: TradeType[]) => {
-  const groupedTrades: Record<string, TradeType[]> = {};
+  const groupedTrades: Record<
+    string,
+    {
+      trades: TradeType[];
+      buys: number;
+      sells: number;
+      sellChangeTotal: number;
+    }
+  > = {};
 
   trades.forEach((trade) => {
     const dateKey = formatDate(new Date(trade.timestamp));
     if (!groupedTrades[dateKey]) {
-      groupedTrades[dateKey] = [];
+      groupedTrades[dateKey] = {
+        trades: [],
+        buys: 0,
+        sells: 0,
+        sellChangeTotal: 0,
+      };
     }
-    groupedTrades[dateKey].push(trade);
+    groupedTrades[dateKey].trades.push(trade);
+    if (trade.side === "BUY") {
+      groupedTrades[dateKey].buys += 1;
+    } else if (trade.side === "SELL") {
+      groupedTrades[dateKey].sells += 1;
+      groupedTrades[dateKey].sellChangeTotal += trade.change || 0;
+    }
   });
 
   return groupedTrades;
@@ -60,7 +93,23 @@ const DailyTradesAccordion = ({
             onClick={() => toggleAccordion(index)}
             className="flex justify-center items-center text-white cursor-pointer border p-4 rounded-md mt-4 w-full max-w-[1040px]"
           >
-            <span>{date}</span>
+            <span className="block sm:hidden">
+              {formatResponsiveDate(new Date(date), true)}
+            </span>
+            <span className="hidden sm:block">{date}</span>
+            <span className="ml-2 text-sm text-gray-400">
+              {groupedTrades[date].buys}:{groupedTrades[date].sells}
+            </span>
+            <span
+              className={`ml-2 text-sm ${
+                groupedTrades[date].sellChangeTotal > 0
+                  ? "text-green-500"
+                  : "text-red-500"
+              }`}
+            >
+              {groupedTrades[date].sellChangeTotal > 0 ? "+" : ""}
+              {groupedTrades[date].sellChangeTotal.toFixed(4)}%
+            </span>
             <div className="text-xl ml-2">
               {openIndices.includes(index) ? (
                 <FiChevronUp />
@@ -72,8 +121,8 @@ const DailyTradesAccordion = ({
 
           <div>
             {openIndices.includes(index) &&
-              (groupedTrades[date].length > 0 ? (
-                groupedTrades[date].map((trade) => (
+              (groupedTrades[date].trades.length > 0 ? (
+                groupedTrades[date].trades.map((trade) => (
                   <TradeCard
                     key={trade.timestamp.toString()}
                     trade={trade}

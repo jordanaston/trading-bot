@@ -30,12 +30,15 @@ const tradeSchema = new mongoose_1.Schema({
     type: { type: String, required: true },
     usdtCapital: { type: Number, required: false },
     purchaseAmount: { type: Number, required: false },
+    usdtPercentage: { type: Number, required: false },
     symbolPrice: { type: Number, required: false },
     quantity: { type: Number, required: true },
     timestamp: { type: Date, required: true },
     testOrder: { type: Boolean, required: false },
     usdtReceived: { type: Number, required: false },
+    closeAmount: { type: Number, required: false },
     error: { type: String, required: false },
+    change: { type: Number, required: false },
 });
 const Trade = mongoose_1.default.model("Trade", tradeSchema);
 exports.default = Trade;

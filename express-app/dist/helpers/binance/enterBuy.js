@@ -16,25 +16,36 @@ exports.enterBuy = void 0;
 const __1 = require("..");
 const Trade_1 = __importDefault(require("../../models/Trade"));
 const binanceClient_1 = __importDefault(require("../../client/binanceClient"));
+const Bot_1 = __importDefault(require("../../models/Bot"));
 const enterBuy = (symbol, buyCount, testOrder) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         const usdtCapital = yield __1.binance.getUSDTValue();
+        if (buyCount === 0) {
+            yield Bot_1.default.updateOne({}, { usdtCapital });
+        }
         let purchaseAmount = 0;
+        let usdtPercentage = 0;
         switch (buyCount) {
             case 0:
                 purchaseAmount = usdtCapital * 0.2;
+                usdtPercentage = 20;
                 break;
             case 1:
                 purchaseAmount = usdtCapital * 0.25;
+                usdtPercentage = 25;
                 break;
             case 2:
                 purchaseAmount = usdtCapital * 0.3333;
+                usdtPercentage = 33.33;
                 break;
             case 3:
                 purchaseAmount = usdtCapital * 0.5;
+                usdtPercentage = 50;
                 break;
             case 4:
                 purchaseAmount = usdtCapital;
+                usdtPercentage = 100;
                 break;
         }
         const symbolPrice = yield __1.binance.getSymbolPrice(symbol);
@@ -46,7 +57,7 @@ const enterBuy = (symbol, buyCount, testOrder) => __awaiter(void 0, void 0, void
         const stepSize = parseFloat((lotSizeFilter === null || lotSizeFilter === void 0 ? void 0 : lotSizeFilter.stepSize) || "1");
         const adjustedQuantity = Math.floor(quantity / stepSize) * stepSize;
         const preciseQuantity = parseFloat(adjustedQuantity.toFixed(precision));
-        const safetyMargin = 0.98;
+        const safetyMargin = 0.999;
         const finalQuantity = parseFloat((preciseQuantity * safetyMargin).toFixed(precision));
         const finalAdjustedQuantity = Math.floor(finalQuantity / stepSize) * stepSize;
         const buyPayload = {
@@ -55,29 +66,49 @@ const enterBuy = (symbol, buyCount, testOrder) => __awaiter(void 0, void 0, void
             type: "MARKET",
             quantity: finalAdjustedQuantity,
         };
+        console.log("BUY PAYLOAD: ", buyPayload);
         const tradeData = {
             symbol,
             side: "BUY" /* OrderSide.BUY */,
             type: "MARKET",
             usdtCapital,
             purchaseAmount,
+            usdtPercentage,
             symbolPrice,
-            quantity: finalAdjustedQuantity,
+            quantity,
             timestamp: new Date(),
         };
-        if (testOrder === true) {
-            tradeData.testOrder = true;
-        }
         let buyOrder;
         try {
             if (testOrder !== true) {
                 buyOrder = yield __1.binance.createBuyOrder(buyPayload);
+                if (buyOrder) {
+                    const fill = (_a = buyOrder === null || buyOrder === void 0 ? void 0 : buyOrder.fills) === null || _a === void 0 ? void 0 : _a[0];
+                    const symbolPrice = parseFloat((fill === null || fill === void 0 ? void 0 : fill.price) || "");
+                    const quantity = parseFloat(buyOrder.executedQty);
+                    const purchaseAmount = parseFloat(buyOrder.cummulativeQuoteQty);
+                    tradeData.symbolPrice = symbolPrice;
+                    tradeData.quantity = quantity;
+                    tradeData.purchaseAmount = purchaseAmount;
+                    console.log("Buy Data After Assignment:", {
+                        symbolPrice: tradeData.symbolPrice,
+                        quantity: tradeData.quantity,
+                        purchaseAmount: tradeData.purchaseAmount,
+                    });
+                }
+                else {
+                    console.error("No fills found in the buy order.");
+                }
             }
         }
         catch (orderError) {
             console.error("Error executing buy order:", orderError);
             tradeData.error = orderError.message;
         }
+        if (testOrder === true) {
+            tradeData.testOrder = true;
+        }
+        console.log("TRADE DATA FOR DB: ", tradeData);
         const trade = new Trade_1.default(tradeData);
         yield trade.save();
         return buyOrder;

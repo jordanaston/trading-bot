@@ -26,6 +26,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const botSchema = new mongoose_1.Schema({
     active: { type: Boolean, required: true },
+    buyCount: { type: Number, required: true },
+    lastTrade: { type: String, required: true },
+    usdtCapital: { type: Number, required: false },
 });
 const Bot = mongoose_1.default.model("Bot", botSchema);
 exports.default = Bot;

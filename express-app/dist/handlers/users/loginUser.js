@@ -14,19 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginUser = void 0;
 const User_1 = __importDefault(require("../../models/User"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const SECRET_KEY = process.env.JWT_SECRET_KEY || "";
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, password } = req.body;
     try {
         const user = yield User_1.default.findOne({ username });
         if (!user) {
-            throw new Error("User not found");
+            return res.status(404).json({ message: "User not found" });
         }
-        if (password !== user.password) {
-            throw new Error("Invalid password");
+        const isPasswordValid = yield bcryptjs_1.default.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Invalid password" });
         }
-        if (password === user.password) {
-            return res.status(200).json({ message: "Login successful" });
-        }
+        const token = jsonwebtoken_1.default.sign({ id: user._id }, SECRET_KEY, { expiresIn: "1m" });
+        return res.status(200).json({ message: "Login successful", token });
     }
     catch (error) {
         return res.status(500).json({ message: "Internal server error" });

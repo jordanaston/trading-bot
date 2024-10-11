@@ -10,7 +10,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const routes_1 = __importDefault(require("./routes/routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5001;
 app.use((0, cors_1.default)({
     origin: "https://ares-trading-bot.netlify.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -19,7 +19,11 @@ app.use((0, cors_1.default)({
 app.use(express_1.default.json());
 app.use("/", routes_1.default);
 app.get("/", (req, res) => {
-    res.send("Welcome to the Ares.");
+    res.send("Welcome to Ares.");
+});
+app.get("/ping", (req, res) => {
+    console.log("Server is awake.");
+    res.status(200).send("Server is awake.");
 });
 const CONNECTION_URL = process.env.CONNECTION_URL;
 mongoose_1.default
