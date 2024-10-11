@@ -25,6 +25,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/ping", (req: Request, res: Response) => {
+  console.log("Server is awake.");
   res.status(200).send("Server is awake.");
 });
 
