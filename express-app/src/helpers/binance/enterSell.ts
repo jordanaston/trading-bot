@@ -60,24 +60,24 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
           const quantity = parseFloat(sellOrder.executedQty);
           const closeAmount = parseFloat(sellOrder.cummulativeQuoteQty);
 
-          const botData = await Bot.findOne({});
-          const usdtCapitalBeforeBuy = botData?.usdtCapital as number;
+          // const botData = await Bot.findOne({});
+          // const usdtCapitalBeforeBuy = botData?.usdtCapital as number;
 
-          await new Promise((resolve) => setTimeout(resolve, 5000));
-          const usdtCapitalAfterSell = await binance.getUSDTValue();
+          // await new Promise((resolve) => setTimeout(resolve, 5000));
+          // const usdtCapitalAfterSell = await binance.getUSDTValue();
 
-          console.log("USDT CAPITAL BEFORE BUY: ", usdtCapitalBeforeBuy);
-          console.log("USDT CAPITAL AFTER SELL: ", usdtCapitalAfterSell);
-          const change = await getChangePercentage(
-            usdtCapitalBeforeBuy,
-            usdtCapitalAfterSell
-          );
+          // console.log("USDT CAPITAL BEFORE BUY: ", usdtCapitalBeforeBuy);
+          // console.log("USDT CAPITAL AFTER SELL: ", usdtCapitalAfterSell);
+          // const change = await getChangePercentage(
+          //   usdtCapitalBeforeBuy,
+          //   usdtCapitalAfterSell
+          // );
 
           tradeData.symbolPrice = symbolPrice;
           tradeData.quantity = quantity;
           tradeData.closeAmount = closeAmount;
-          tradeData.usdtReceived = usdtCapitalAfterSell;
-          tradeData.change = change;
+          // tradeData.usdtReceived = usdtCapitalAfterSell;
+          // tradeData.change = change;
 
           console.log("Sell Data After Assignment:", {
             symbolPrice: tradeData.symbolPrice,
