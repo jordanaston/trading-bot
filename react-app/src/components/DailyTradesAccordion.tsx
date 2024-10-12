@@ -102,13 +102,16 @@ const DailyTradesAccordion = ({
             </span>
             <span
               className={`ml-2 text-sm ${
-                groupedTrades[date].sellChangeTotal > 0
+                groupedTrades[date].sellChangeTotal === 0
+                  ? "text-gray-400"
+                  : groupedTrades[date].sellChangeTotal > 0
                   ? "text-green-500"
                   : "text-red-500"
               }`}
             >
-              {groupedTrades[date].sellChangeTotal > 0 ? "+" : ""}
-              {groupedTrades[date].sellChangeTotal.toFixed(4)}%
+              {groupedTrades[date].sellChangeTotal === 0
+                ? "0%"
+                : `${groupedTrades[date].sellChangeTotal > 0 ? "+" : ""}${groupedTrades[date].sellChangeTotal.toFixed(4)}%`}
             </span>
             <div className="text-xl ml-2">
               {openIndices.includes(index) ? (

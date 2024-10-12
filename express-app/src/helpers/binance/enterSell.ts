@@ -7,6 +7,7 @@ import { getChangePercentage } from "./getChangePercentage";
 import Bot from "../../models/Bot";
 
 export const enterSell = async (symbol: string, testOrder?: boolean) => {
+  await new Promise((resolve) => setTimeout(resolve, 10000));
   try {
     const tokenBalance = await binance.getTokenBalance(symbol);
 
@@ -80,6 +81,10 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
 
     const botData = await Bot.findOne({});
     const usdtCapitalBeforeBuy = botData?.usdtCapital as number;
+
+    // If your last fix doesn't work, try adding the closeAmount to the usdtCapitalBeforeBuy
+    // const usdtCapitalAfterSell =
+    //   usdtCapitalBeforeBuy + tradeData.closeAmount;
 
     await new Promise((resolve) => setTimeout(resolve, 10000));
     const usdtCapitalAfterSell = await binance.getUSDTValue();
