@@ -4,7 +4,7 @@ export const getChangePercentage = async (
 ) => {
   try {
     const change =
-      ((usdtCapitalAfterSell - usdtCapitalBeforeBuy) / usdtCapitalBeforeBuy) *
+      ((usdtCapitalBeforeBuy - usdtCapitalAfterSell) / usdtCapitalBeforeBuy) *
       100;
     const fixedChange = parseFloat(change.toFixed(4));
     return fixedChange;

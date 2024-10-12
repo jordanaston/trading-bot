@@ -63,7 +63,7 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
           const botData = await Bot.findOne({});
           const usdtCapitalBeforeBuy = botData?.usdtCapital as number;
 
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 5000));
           const usdtCapitalAfterSell = await binance.getUSDTValue();
 
           console.log("USDT CAPITAL BEFORE BUY: ", usdtCapitalBeforeBuy);
