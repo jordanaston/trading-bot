@@ -7,7 +7,7 @@ import { getChangePercentage } from "./getChangePercentage";
 import Bot from "../../models/Bot";
 
 export const enterSell = async (symbol: string, testOrder?: boolean) => {
-  await new Promise((resolve) => setTimeout(resolve, 10000));
+  await new Promise((resolve) => setTimeout(resolve, 2000));
   try {
     const tokenBalance = await binance.getTokenBalance(symbol);
 
@@ -86,7 +86,7 @@ export const enterSell = async (symbol: string, testOrder?: boolean) => {
     // const usdtCapitalAfterSell =
     //   usdtCapitalBeforeBuy + tradeData.closeAmount;
 
-    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await new Promise((resolve) => setTimeout(resolve, 8000));
     const usdtCapitalAfterSell = await binance.getUSDTValue();
 
     console.log("USDT CAPITAL BEFORE BUY: ", usdtCapitalBeforeBuy);
